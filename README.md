@@ -1,10 +1,10 @@
-# 🔐 Simple Login API with Node.js, Express & MySQL
+# 🔐 SAMPAHIN API
 
-API ini menyediakan fitur autentikasi dasar (Register, Login, Update Profile, Change Password, dan Delete Account) menggunakan Express.js, MySQL, dan JWT.
+API ini baru menyediakan fitur autentikasi dasar (Register, Login, Update Profile, Change Password, dan Delete Account) menggunakan Express.js, MySQL, dan JWT.
 
 ---
 
-## 📁 Fitur
+## 📁 Fitur (Currently)
 
 - ✅ Register
 - ✅ Login
@@ -146,11 +146,6 @@ curl -X DELETE http://localhost:5000/api/delete -H "Authorization: Bearer <TOKEN
 
 ## 🧑 Author
 
-Wayan Christian Pradayana  
-Informatics Engineering — Universitas Brawijaya
+Wayan Christian Pradayana
 
 ---
-
-## 📜 License
-
-MIT License
