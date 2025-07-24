@@ -1,17 +1,18 @@
 # 🔐 SAMPAHIN API
 
-API ini baru menyediakan fitur autentikasi dasar (Register, Login, Update Profile, Change Password, dan Delete Account) menggunakan Express.js, MySQL, dan JWT.
+API ini menyediakan fitur autentikasi dasar (Register, Login, Update Profile, Change Password, Delete Account, Logout) menggunakan Express.js, MySQL, dan JWT. API ini dirancang sebagai bagian dari sistem yang lebih besar.
 
 ---
 
-## 📁 Fitur (Currently)
+## 📁 Fitur (Implemented)
 
-- ✅ Register
+- ✅ Register (dengan peran default `user`)
 - ✅ Login
-- ✅ Update Account (name, birthdate, phone)
-- ✅ Change Password
-- ✅ Delete Account
-- 🔐 JWT Authentication
+- ✅ Logout
+- ✅ Update Akun (nama, tanggal lahir, nomor telepon)
+- ✅ Ganti Password
+- ✅ Hapus Akun
+- 🔐 JWT Authentication & Authorization
 
 ---
 
@@ -22,7 +23,7 @@ API ini baru menyediakan fitur autentikasi dasar (Register, Login, Update Profil
 - MySQL
 - Sequelize ORM
 - JWT (jsonwebtoken)
-- Bcrypt (hash password)
+- Bcrypt (hashing password)
 
 ---
 
@@ -50,22 +51,24 @@ login-api/
 
 ## ⚙️ Instalasi & Konfigurasi
 
-### 1. Clone repository
+### 1. Clone Repository
 
 ```bash
 git clone <repo_url>
 cd login-api
 ```
 
-### 2. Install dependencies
+### 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Buat file `.env` atau gunakan `.env.example`
+### 3. Konfigurasi `.env`
 
-```
+Buat file `.env` atau salin dari `.env.example`:
+
+```env
 DB_HOST=localhost
 DB_USER=root
 DB_PASS=your_mysql_password
@@ -93,54 +96,101 @@ node server.js
 ### 🔸 Register
 
 ```bash
-curl -X POST http://localhost:5000/api/register -H "Content-Type: application/json" -d '{"name":"Wayan","birthdate":"2000-01-01","phone":"081234567890","email":"wayan@example.com","password":"password123"}'
+curl -X POST http://localhost:5000/api/register \
+-H "Content-Type: application/json" \
+-d '{
+  "name":"Wayan",
+  "birthdate":"2000-01-01",
+  "phone":"081234567890",
+  "email":"wayan@example.com",
+  "password":"password123"
+}'
 ```
+
+> Role default akan otomatis di-set ke `user`.
 
 ### 🔸 Login
 
 ```bash
-curl -X POST http://localhost:5000/api/login -H "Content-Type: application/json" -d '{"email":"wayan@example.com","password":"password123"}'
+curl -X POST http://localhost:5000/api/login \
+-H "Content-Type: application/json" \
+-d '{
+  "email":"wayan@example.com",
+  "password":"password123"
+}'
 ```
 
-> Simpan token dari hasil login untuk digunakan di endpoint berikutnya.
+> Token JWT akan diberikan sebagai respon. Simpan token tersebut untuk autentikasi endpoint lain.
+
+### 🔸 Logout
+
+```bash
+curl -X POST http://localhost:5000/api/logout \
+-H "Authorization: Bearer <TOKEN>"
+```
 
 ### 🔸 Update Akun
 
 ```bash
-curl -X PUT http://localhost:5000/api/update -H "Content-Type: application/json" -H "Authorization: Bearer <TOKEN>" -d '{"name":"Wayan Updated","birthdate":"2001-01-01","phone":"081298765432"}'
+curl -X PUT http://localhost:5000/api/update \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <TOKEN>" \
+-d '{
+  "name":"Wayan Updated",
+  "birthdate":"2001-01-01",
+  "phone":"081298765432"
+}'
 ```
 
 ### 🔸 Ganti Password
 
 ```bash
-curl -X PUT http://localhost:5000/api/change-password -H "Content-Type: application/json" -H "Authorization: Bearer <TOKEN>" -d '{"oldPassword":"password123","newPassword":"newpass456"}'
+curl -X PUT http://localhost:5000/api/change-password \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer <TOKEN>" \
+-d '{
+  "oldPassword":"password123",
+  "newPassword":"newpass456"
+}'
 ```
 
 ### 🔸 Hapus Akun
 
 ```bash
-curl -X DELETE http://localhost:5000/api/delete -H "Authorization: Bearer <TOKEN>"
+curl -X DELETE http://localhost:5000/api/delete \
+-H "Authorization: Bearer <TOKEN>"
 ```
 
 ---
 
-## 🗂️ Tabel User
+## 🗂️ Struktur Tabel `users`
 
-| Field     | Tipe   | Keterangan      |
-| --------- | ------ | --------------- |
-| id        | INT    | Primary Key     |
-| name      | STRING | Nama lengkap    |
-| birthdate | STRING | Tanggal lahir   |
-| phone     | STRING | Nomor telepon   |
-| email     | STRING | Unique Email    |
-| password  | STRING | Hashed password |
+| Field     | Type    | Keterangan                 |
+| --------- | ------- | -------------------------- |
+| id        | INTEGER | Primary key (auto inc.)    |
+| name      | STRING  | Nama lengkap               |
+| birthdate | STRING  | Tanggal lahir              |
+| phone     | STRING  | Nomor telepon              |
+| email     | STRING  | Email unik                 |
+| password  | STRING  | Password (hashed)          |
+| role      | STRING  | Peran user (default: user) |
+| createdAt | DATE    | Timestamp dibuat           |
+| updatedAt | DATE    | Timestamp diperbarui       |
+
+---
+
+## 🔐 Role & Authorization
+
+- Default role saat register adalah `user`.
+- Role lainnya seperti `admin`, `petugas`, dll dapat di-set manual atau melalui API admin khusus (belum tersedia).
+- Role bisa digunakan untuk membatasi akses fitur tertentu pada sistem utama.
 
 ---
 
 ## 🛡️ Keamanan
 
-- Password disimpan dalam bentuk hash menggunakan `bcrypt`.
-- Semua endpoint sensitif dilindungi oleh `JWT`.
+- Password disimpan dalam bentuk hash dengan `bcrypt`.
+- Endpoint sensitif diamankan dengan `JWT` yang harus dikirim dalam header `Authorization: Bearer <TOKEN>`.
 
 ---
 

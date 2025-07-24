@@ -5,11 +5,11 @@ require("dotenv").config();
 
 const register = async (req, res) => {
   try {
-    const { name, birthdate, phone, email, password } = req.body;
+    const { name, birthdate, phone, email, password, role = "user" } = req.body;
     const hashed = await bcrypt.hash(password, 10);
 
-    const user = await User.create({ name, birthdate, phone, email, password: hashed });
-    res.json({ message: "Registered successfully", id: user.id });
+    const user = await User.create({ name, birthdate, phone, email, password: hashed, role });
+    res.json({ message: "Registered successfully", id: user.id, role: user.role });
   } catch (err) {
     res.status(400).json({ error: "Email already exists or invalid input" });
   }
@@ -23,8 +23,11 @@ const login = async (req, res) => {
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) return res.status(400).json({ error: "Invalid password" });
 
-  const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
-  res.json({ message: "Login successful", token });
+  const token = jwt.sign(
+    { id: user.id, email: user.email, role: user.role },
+    process.env.JWT_SECRET
+  );
+  res.json({ message: "Login successful", token, role: user.role });
 };
 
 const updateAccount = async (req, res) => {
