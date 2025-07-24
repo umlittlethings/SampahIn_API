@@ -24,6 +24,7 @@ API ini menyediakan fitur autentikasi dasar (Register, Login, Update Profile, Ch
 - Sequelize ORM
 - JWT (jsonwebtoken)
 - Bcrypt (hashing password)
+- Express-validator
 
 ---
 
@@ -81,6 +82,7 @@ PORT=5000
 
 ```bash
 node migrations/001-create-user-table.js
+node migrations/002-create-laporan-table.js
 ```
 
 ### 5. Jalankan Server
@@ -176,6 +178,24 @@ curl -X DELETE http://localhost:5000/api/delete \
 | role      | STRING  | Peran user (default: user) |
 | createdAt | DATE    | Timestamp dibuat           |
 | updatedAt | DATE    | Timestamp diperbarui       |
+
+---
+
+## 🗂️ Struktur Tabel `laporans`
+
+| Field       | Type    | Keterangan                 |
+| ---------   | ------- | -------------------------- |
+| id          | INTEGER | Primary key (auto inc.)    |
+| id_user     | STRING  | Id user pelapor            |
+| title       | STRING  | Judul Laporan              |
+| description | STRING  | deskripsi laporan          |
+| photo       | STRING  | foto laporan               |
+| tanggal     | DATE    | tanggal laporan            |
+| status      | STRING  | status laporan             |
+| lokasi      | STRING  | lokasi laporan             |
+| kategori    | STRING  | kategori laporan           |
+| createdAt   | DATE    | Timestamp dibuat           |
+| updatedAt   | DATE    | Timestamp diperbarui       |
 
 ---
 
