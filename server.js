@@ -1,12 +1,13 @@
 const express = require("express");
+const cors = require("cors");
 const app = express();
 require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
 const laporanRoutes = require("./routes/laporanRoutes");
-
 const sequelize = require("./models/db");
 
+app.use(cors()); 
 app.use(express.json());
 
 app.use("/api", authRoutes);
@@ -16,9 +17,7 @@ const PORT = process.env.PORT || 5000;
 
 async function startServer() {
   try {
-    await sequelize.sync({ alter: true }); 
-    //await initializeRoles();
-    
+    await sequelize.sync({ alter: true });
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
       console.log(`API Documentation: http://localhost:${PORT}/api-docs`);
@@ -28,14 +27,7 @@ async function startServer() {
     process.exit(1);
   }
 }
-
 startServer();
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: "Internal Server Error" });
-});
-
-module.exports = app;
 
 
 // const express = require("express");
