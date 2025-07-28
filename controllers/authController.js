@@ -27,7 +27,12 @@ const login = async (req, res) => {
     { id: user.id, email: user.email, role: user.role },
     process.env.JWT_SECRET
   );
-  res.json({ message: "Login successful", token, role: user.role });
+  res.json({ 
+    message: "Login successful", 
+    token, 
+    role: user.role, 
+    name: user.name 
+  });
 };
 
 const updateAccount = async (req, res) => {
