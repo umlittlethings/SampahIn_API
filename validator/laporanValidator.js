@@ -8,7 +8,6 @@ const laporanValidator = [
   body('tanggal').optional().isISO8601().withMessage('Invalid date format'),
   body('status').optional().isIn(['Belum di proses', 'Proses', 'Selesai']),
   body('kategori').optional().isIn(['organik', 'anorganik', 'b3']),
-  body('lokasi').optional().isString(),
-  body('photo').optional().isURL().withMessage('Photo must be a valid URL')
+  body('lokasi').optional().isString()
 ];
 module.exports = laporanValidator;

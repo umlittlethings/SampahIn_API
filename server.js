@@ -1,17 +1,30 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
+const fs = require("fs");
 const app = express();
 require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
 const laporanRoutes = require("./routes/laporanRoutes");
+const userRoutes = require("./routes/userRoutes");
 const sequelize = require("./models/db");
+
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 app.use(cors()); 
 app.use(express.json());
 
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.use("/api", authRoutes);
-app.use("/api", laporanRoutes);
+app.use("/api/laporan", laporanRoutes);
+app.use("/api/users", userRoutes);
 
 const PORT = process.env.PORT || 5000;
 
@@ -28,22 +41,3 @@ async function startServer() {
   }
 }
 startServer();
-
-
-// const express = require("express");
-// const app = express();
-// require("dotenv").config();
-
-// const laporanRoutes = require("./routes/laporanRoutes");
-// const authRoutes = require("./routes/authRoutes");
-// const sequelize = require("./models/db");
-
-// app.use(express.json());
-// app.use("/api", authRoutes);
-// app.use("/api", laporanRoutes);
-
-// const PORT = process.env.PORT || 5000;
-
-// sequelize.sync().then(() => {
-//   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-// });

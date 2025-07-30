@@ -1,13 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const laporanController = require("../controllers/laporanController");
-//const authMiddleware = require("../middleware/authMiddleware");
+const upload = require("../middleware/uploadMiddleware");
 const laporanValidator = require('../validator/laporanValidator');
 
-router.post("/", laporanValidator, laporanController.createLaporan);
+// Use multer for file uploads
+router.post("/", upload.single('photo'), laporanValidator, laporanController.createLaporan);
 router.get("/", laporanController.getAllLaporan);
+router.get("/user/:id_user", laporanController.getLaporanByUser);
 router.get("/:id", laporanController.getLaporanDetail);
-router.put("/:id", laporanController.updateLaporan);
+router.put("/:id", upload.single('photo'), laporanController.updateLaporan);
 router.delete("/:id", laporanController.deleteLaporan);
 
 module.exports = router;
