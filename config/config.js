@@ -1,18 +1,22 @@
 require('dotenv').config();
 
+const getEnv = (prodName, altName) => process.env[prodName] || process.env[altName];
+
 module.exports = {
   development: {
-    username: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
+    username: getEnv("DB_USER", "MYSQLUSER"),
+    password: getEnv("DB_PASS", "MYSQLPASSWORD"),
+    database: getEnv("DB_NAME", "MYSQLDATABASE"),
+    host: getEnv("DB_HOST", "MYSQLHOST"),
+    port: process.env.MYSQLPORT || 3306,
     dialect: 'mysql'
   },
   production: {
-    username: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
+    username: getEnv("DB_USER", "MYSQLUSER"),
+    password: getEnv("DB_PASS", "MYSQLPASSWORD"),
+    database: getEnv("DB_NAME", "MYSQLDATABASE"),
+    host: getEnv("DB_HOST", "MYSQLHOST"),
+    port: process.env.MYSQLPORT || 3306,
     dialect: 'mysql'
   }
 };
