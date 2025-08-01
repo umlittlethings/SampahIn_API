@@ -1,20 +1,33 @@
+// models/db.js
 const { Sequelize } = require("sequelize");
 require("dotenv").config();
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASS,
-  {
-    host: process.env.DB_HOST,
-    dialect: "mysql",
-    logging: false,
-  }
-);
+const databaseUrl = process.env.DATABASE_URL; // isi dengan: mysql://root:...@...:3306/railway
+if (!databaseUrl) {
+  console.error("❌ Missing DATABASE_URL env var");
+  process.exit(1);
+}
 
-sequelize
-  .authenticate()
-  .then(() => console.log("MySQL connected..."))
-  .catch((err) => console.error("Connection error:", err));
+console.log("🔎 Using DB URL:", databaseUrl.replace(/\/\/.*?:.*?@/, "//****:****@")); // mask password
+
+const sequelize = new Sequelize(databaseUrl, {
+  dialect: "mysql",
+  logging: false,
+  retry: {
+    max: 5, // coba ulang beberapa kali kalau belum siap
+  },
+  dialectOptions: {
+    connectTimeout: 10000, // 10 detik timeout
+  },
+});
+
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("✅ DB connection established");
+  } catch (err) {
+    console.error("❌ DB connection authenticate failed:", err);
+  }
+})();
 
 module.exports = sequelize;
