@@ -32,8 +32,12 @@ async function startServer() {
     console.log("⏳ Waiting for database to be ready...");
     await new Promise(resolve => setTimeout(resolve, 5000));
     
-    // Run migration
-    await runMigration();
+    // Try to run migration, but don't fail if it doesn't work
+    try {
+      await runMigration();
+    } catch (migrationError) {
+      console.warn("⚠️ Migration failed, but continuing with server start:", migrationError.message);
+    }
     
     // Start the server
     console.log("🚀 Starting server...");
