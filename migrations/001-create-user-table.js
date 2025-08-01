@@ -3,7 +3,7 @@ const User = require("../models/user");
 
 (async () => {
   try {
-    await sequelize.sync({ force: true }); // Hapus semua dan buat ulang
+    await sequelize.sync({ force: true }); 
     console.log("✅ Table created successfully");
     process.exit();
   } catch (err) {
